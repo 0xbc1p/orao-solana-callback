@@ -1,16 +1,43 @@
+pub mod constants;
+pub mod error;
+pub mod instructions;
+pub mod state;
+
 use anchor_lang::prelude::*;
 
-declare_id!("FXD8xcRKWTPDxSomFA2tgXoyqSCeoXxSgkgzW4q1eLnB");
+pub use constants::*;
+pub use instructions::*;
+pub use state::*;
+
+declare_id!("3s1QVFx1cZ5W7ubDfvz9d8XNSz8kfNQp69Tc1mjr6wrs");
 
 #[program]
-pub mod orao_solana_vrf_callback {
+pub mod example_client {
     use super::*;
 
     pub fn initialize(ctx: Context<Initialize>) -> Result<()> {
-        msg!("Greetings from: {:?}", ctx.program_id);
-        Ok(())
+        initialize::initialize_handler(ctx)
+    }
+
+    pub fn request(
+        ctx: Context<Request>,
+        seed: [u8; 32],
+        override_with_param: Option<HowToOverride>,
+    ) -> Result<()> {
+        request::handler(ctx, seed, override_with_param)
+    }
+
+    pub fn client_level_callback(
+        ctx: Context<ClientLevelCallback>,
+        test_parameter: u8,
+    ) -> Result<()> {
+        client_level_callback::clc_handler(ctx, test_parameter)
+    }
+
+    pub fn request_level_callback(
+        ctx: Context<RequestLevelCallback>,
+        test_parameter: u8,
+    ) -> Result<()> {
+        request_level_callback::rlc_handler(ctx, test_parameter)
     }
 }
-
-#[derive(Accounts)]
-pub struct Initialize {}
